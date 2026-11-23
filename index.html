@@ -1,103 +1,397 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GameZone PK - Free Online Games</title>
+<title>FREE GAME | Play Online</title>
+
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#10111b;color:white;font-family:Arial,sans-serif}
-header{background:#191b2b;padding:22px 15px;text-align:center;border-bottom:2px solid #e5b82e}
-header h1{margin:0;color:#f4c542;font-size:30px}
-header p{color:#bbb;margin-bottom:0}
-main{max-width:850px;margin:auto;padding:20px}
-h2{color:#f4c542}
-.games{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px}
-.card{background:#202337;padding:18px;border-radius:14px;text-align:center}
-.card h3{margin-top:5px}
-button{background:#e5b82e;color:#151515;border:0;padding:11px 17px;border-radius:8px;font-weight:bold;cursor:pointer}
-input{padding:11px;width:100%;border-radius:8px;border:0;margin:8px 0}
-.game{background:#202337;padding:18px;border-radius:14px;margin-top:20px;text-align:center}
-#board{display:grid;grid-template-columns:repeat(3,75px);gap:6px;justify-content:center;margin:15px}
-.cell{height:75px;background:#343951;color:white;font-size:28px;border-radius:8px}
-footer{text-align:center;padding:25px;color:#aaa}
+body{
+ margin:0;
+ background:#080808;
+ color:#fff;
+ font-family:Arial,sans-serif;
+}
+header{
+ background:#101010;
+ border-bottom:1px solid #b89435;
+ padding:18px 6%;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ flex-wrap:wrap;
+}
+.logo{
+ color:#e8bd55;
+ font-size:27px;
+ font-weight:900;
+ letter-spacing:2px;
+}
+.logo span{color:white}
+nav a{
+ color:#ddd;
+ text-decoration:none;
+ margin:0 10px;
+ font-size:14px;
+}
+nav a:hover{color:#e8bd55}
+.hero{
+ padding:65px 20px;
+ text-align:center;
+ background:radial-gradient(ellipse at center,#30240e 0%,#111 45%,#080808 80%);
+ border-bottom:1px solid #332817;
+}
+.hero h1{
+ font-size:clamp(35px,7vw,58px);
+ margin:0 0 15px;
+ color:#f1cd72;
+}
+.hero p{color:#bbb;font-size:16px}
+.gold-btn{
+ display:inline-block;
+ background:linear-gradient(135deg,#f5d477,#b68a2d);
+ color:#111;
+ border:0;
+ padding:13px 25px;
+ border-radius:5px;
+ font-weight:bold;
+ cursor:pointer;
+ text-decoration:none;
+ margin-top:15px;
+}
+main{max-width:1100px;margin:auto;padding:30px 18px}
+.section-title{
+ color:#e8bd55;
+ font-size:25px;
+ margin:15px 0 20px;
+}
+.search{
+ width:100%;
+ padding:15px;
+ background:#151515;
+ border:1px solid #59451e;
+ border-radius:7px;
+ color:white;
+ font-size:15px;
+ margin-bottom:20px;
+}
+.categories{
+ display:flex;
+ flex-wrap:wrap;
+ gap:10px;
+ margin-bottom:25px;
+}
+.category{
+ background:#171717;
+ border:1px solid #695326;
+ color:#e8bd55;
+ padding:10px 17px;
+ border-radius:20px;
+ cursor:pointer;
+}
+.category.active,.category:hover{
+ background:#e8bd55;
+ color:#111;
+}
+.games{
+ display:grid;
+ grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+ gap:18px;
+}
+.card{
+ background:linear-gradient(145deg,#1b1b1b,#101010);
+ border:1px solid #393020;
+ border-radius:12px;
+ padding:22px;
+ text-align:center;
+ transition:.25s;
+}
+.card:hover{
+ transform:translateY(-5px);
+ border-color:#e8bd55;
+ box-shadow:0 8px 25px #b68a2d22;
+}
+.game-icon{font-size:55px;margin:10px}
+.card h3{color:#f0cc70;margin:10px}
+.card p{color:#aaa;font-size:14px;min-height:35px}
+.card button{
+ background:#d6ad4d;
+ border:0;
+ padding:11px 22px;
+ border-radius:5px;
+ font-weight:bold;
+ cursor:pointer;
+}
+#gameArea{
+ display:none;
+ margin-top:35px;
+ padding:25px 15px;
+ background:#151515;
+ border:1px solid #9a762e;
+ border-radius:12px;
+ text-align:center;
+}
+#gameArea h2{color:#f0cc70}
+.game-input{
+ padding:12px;
+ width:200px;
+ max-width:90%;
+ background:#080808;
+ color:white;
+ border:1px solid #9a762e;
+ border-radius:5px;
+ margin:10px;
+}
+.game-btn{
+ background:#d6ad4d;
+ color:#111;
+ border:0;
+ padding:12px 18px;
+ border-radius:5px;
+ font-weight:bold;
+ margin:5px;
+ cursor:pointer;
+}
+#board{
+ display:grid;
+ grid-template-columns:repeat(3,75px);
+ justify-content:center;
+ gap:6px;
+ margin:20px;
+}
+.cell{
+ width:75px;
+ height:75px;
+ background:#29251c;
+ color:#f0cc70;
+ border:1px solid #8c6a2c;
+ font-size:28px;
+ border-radius:6px;
+}
+#result{color:#f0cc70;font-weight:bold}
+.about{
+ margin-top:45px;
+ padding:25px;
+ background:#121212;
+ border-left:3px solid #d6ad4d;
+ color:#bbb;
+ line-height:1.7;
+}
+footer{
+ text-align:center;
+ padding:30px 15px;
+ margin-top:40px;
+ background:#111;
+ border-top:1px solid #59451e;
+ color:#999;
+ font-size:13px;
+}
+footer strong{color:#e8bd55}
+@media(max-width:600px){
+ header{justify-content:center;gap:15px}
+ nav{width:100%;text-align:center}
+ nav a{margin:0 7px}
+ .hero{padding:45px 15px}
+}
 </style>
 </head>
-<body>
-<header>
-<h1>🎮 GameZone PK</h1>
-<p>Play Free Games • Have Fun • Every Day</p>
-</header>
-<main>
-<h2>🔥 Popular Games</h2>
-<div class="games">
-<div class="card">
-<h3>🎯 Number Guess</h3>
-<p>Guess the secret number from 1 to 10.</p>
-<button onclick="showGame('guess')">Play Now</button>
-</div>
-<div class="card">
-<h3>✊ Rock Paper Scissors</h3>
-<p>Challenge the computer!</p>
-<button onclick="showGame('rps')">Play Now</button>
-</div>
-<div class="card">
-<h3>❌ Tic Tac Toe</h3>
-<p>Play a classic X and O game.</p>
-<button onclick="showGame('tic')">Play Now</button>
-</div>
-</div>
 
-<div class="game" id="game">
-<h2>Welcome to GameZone PK!</h2>
-<p>Select a game above and start playing.</p>
-</div>
+<body>
+
+<header>
+ <div class="logo">♛ FREE <span>GAME</span></div>
+ <nav>
+  <a href="#home">HOME</a>
+  <a href="#games">GAMES</a>
+  <a href="#about">ABOUT</a>
+ </nav>
+</header>
+
+<section class="hero" id="home">
+ <h1>WELCOME TO FREE GAME</h1>
+ <p>Discover. Play. Enjoy. Your Gaming World Starts Here.</p>
+ <a href="#games" class="gold-btn">EXPLORE GAMES →</a>
+</section>
+
+<main>
+ <h2 class="section-title" id="games">♛ EXPLORE GAMES</h2>
+
+ <input class="search" id="search"
+ placeholder="🔍 Search your favourite game..."
+ oninput="filterGames()">
+
+ <div class="categories">
+  <button class="category active" onclick="filterCategory('All',this)">All Games</button>
+  <button class="category" onclick="filterCategory('Puzzle',this)">Puzzle</button>
+  <button class="category" onclick="filterCategory('Action',this)">Action</button>
+  <button class="category" onclick="filterCategory('Sports',this)">Sports</button>
+ </div>
+
+ <div class="games" id="gameList">
+
+  <div class="card" data-name="number guess" data-category="Puzzle">
+   <div class="game-icon">🎯</div>
+   <h3>Number Guess</h3>
+   <p>Find the secret number and win!</p>
+   <button onclick="showGame('guess')">PLAY NOW</button>
+  </div>
+
+  <div class="card" data-name="rock paper scissors" data-category="Action">
+   <div class="game-icon">✊</div>
+   <h3>Rock Paper Scissors</h3>
+   <p>Challenge the computer.</p>
+   <button onclick="showGame('rps')">PLAY NOW</button>
+  </div>
+
+  <div class="card" data-name="tic tac toe" data-category="Sports">
+   <div class="game-icon">❌</div>
+   <h3>Tic Tac Toe</h3>
+   <p>Play the classic X and O game.</p>
+   <button onclick="showGame('tic')">PLAY NOW</button>
+  </div>
+
+ </div>
+
+ <div id="gameArea">
+  <h2 id="gameTitle">GAME</h2>
+  <div id="gameContent"></div>
+  <p id="result"></p>
+  <button class="game-btn" onclick="closeGame()">CLOSE GAME</button>
+ </div>
+
+ <section class="about" id="about">
+  <h2 class="section-title">ABOUT FREE GAME</h2>
+  Welcome to Free Game! Enjoy free browser games and have fun.
+  We are working to bring more exciting games and entertainment
+  to our gaming community.
+ </section>
 </main>
-<footer>© 2026 GameZone PK | All Rights Reserved</footer>
+
+<footer>
+ <strong>♛ FREE GAME</strong>
+ <p>Play Free • Enjoy More</p>
+ © 2026 Free Game. All Rights Reserved.
+</footer>
 
 <script>
+let secret=0;
+let cells=[];
+let turn='X';
+let activeCategory='All';
+
+function filterGames(){
+ let q=document.getElementById('search').value.toLowerCase();
+ document.querySelectorAll('.card').forEach(card=>{
+  let name=card.dataset.name;
+  let category=card.dataset.category;
+  card.style.display=
+   name.includes(q) &&
+   (activeCategory==='All'||category===activeCategory)
+   ?'block':'none';
+ });
+}
+
+function filterCategory(category,button){
+ activeCategory=category;
+ document.querySelectorAll('.category').forEach(b=>b.classList.remove('active'));
+ button.classList.add('active');
+ filterGames();
+}
+
 function showGame(type){
-let g=document.getElementById('game');
-if(type==='guess'){
-g.innerHTML=`<h2>🎯 Number Guess</h2><p>Guess a number between 1 and 10</p><input id="guess" type="number" min="1" max="10" placeholder="Your guess"><button onclick="checkGuess()">Check</button><p id="result"></p>`;
-window.secret=Math.floor(Math.random()*10)+1;
+ let area=document.getElementById('gameArea');
+ let content=document.getElementById('gameContent');
+ let title=document.getElementById('gameTitle');
+ document.getElementById('result').innerText='';
+ area.style.display='block';
+
+ if(type==='guess'){
+  title.innerText='🎯 NUMBER GUESS';
+  secret=Math.floor(Math.random()*10)+1;
+  content.innerHTML=`
+   <p>Guess a number between 1 and 10</p>
+   <input class="game-input" id="guess" type="number" min="1" max="10" placeholder="Enter number">
+   <br><button class="game-btn" onclick="checkGuess()">CHECK</button>`;
+ }
+
+ if(type==='rps'){
+  title.innerText='✊ ROCK PAPER SCISSORS';
+  content.innerHTML=`
+   <p>Choose your move!</p>
+   <button class="game-btn" onclick="play('Rock')">ROCK</button>
+   <button class="game-btn" onclick="play('Paper')">PAPER</button>
+   <button class="game-btn" onclick="play('Scissors')">SCISSORS</button>`;
+ }
+
+ if(type==='tic'){
+  title.innerText='❌ TIC TAC TOE';
+  cells=Array(9).fill('');
+  turn='X';
+  content.innerHTML=`
+   <div id="board">
+   ${Array.from({length:9},(_,i)=>`<button class="cell" onclick="move(${i})"></button>`).join('')}
+   </div>
+   <button class="game-btn" onclick="showGame('tic')">RESTART</button>`;
+  document.getElementById('result').innerText='Turn: X';
+ }
+ area.scrollIntoView({behavior:'smooth'});
 }
-if(type==='rps'){
-g.innerHTML=`<h2>✊ Rock Paper Scissors</h2><button onclick="play('Rock')">Rock</button> <button onclick="play('Paper')">Paper</button> <button onclick="play('Scissors')">Scissors</button><p id="result"></p>`;
-}
-if(type==='tic'){
-window.cells=Array(9).fill('');
-window.turn='X';
-g.innerHTML=`<h2>❌ Tic Tac Toe</h2><div id="board">${Array.from({length:9},(_,i)=>`<button class="cell" onclick="move(${i})"></button>`).join('')}</div><p id="result">Turn: X</p><button onclick="showGame('tic')">Restart</button>`;
-}
-}
+
 function checkGuess(){
-let n=Number(document.getElementById('guess').value);
-let r=document.getElementById('result');
-if(!n||n<1||n>10){r.innerText='Enter a number from 1 to 10';return}
-r.innerText=n===secret?'🎉 Correct! You won!':n<secret?'Too low! Try again.':'Too high! Try again.';
+ let n=Number(document.getElementById('guess').value);
+ let r=document.getElementById('result');
+ if(!n||n<1||n>10){
+  r.innerText='Enter a number from 1 to 10';
+  return;
+ }
+ r.innerText=n===secret?'🎉 YOU WIN!':n<secret?'Too low! Try again.':'Too high! Try again.';
 }
+
 function play(choice){
-let options=['Rock','Paper','Scissors'];
-let computer=options[Math.floor(Math.random()*3)];
-let result=choice===computer?'Draw!':(choice==='Rock'&&computer==='Scissors'||choice==='Paper'&&computer==='Rock'||choice==='Scissors'&&computer==='Paper')?'You win! 🎉':'Computer wins!';
-document.getElementById('result').innerText='You: '+choice+' | Computer: '+computer+' — '+result;
+ let options=['Rock','Paper','Scissors'];
+ let computer=options[Math.floor(Math.random()*3)];
+ let result=choice===computer?'DRAW!':
+ (choice==='Rock'&&computer==='Scissors'||
+ choice==='Paper'&&computer==='Rock'||
+ choice==='Scissors'&&computer==='Paper')
+ ?'🎉 YOU WIN!':'COMPUTER WINS!';
+ document.getElementById('result').innerText=
+ 'You: '+choice+' | Computer: '+computer+' | '+result;
 }
+
 function move(i){
-if(cells[i]||winner())return;
-cells[i]=turn;
-let buttons=document.querySelectorAll('.cell');
-buttons[i].innerText=turn;
-if(winner()){document.getElementById('result').innerText=turn+' wins! 🎉';return}
-if(cells.every(Boolean)){document.getElementById('result').innerText='Draw!';return}
-turn=turn==='X'?'O':'X';
-document.getElementById('result').innerText='Turn: '+turn;
+ if(cells[i]||getWinner())return;
+ cells[i]=turn;
+ document.querySelectorAll('.cell')[i].innerText=turn;
+
+ if(getWinner()){
+  document.getElementById('result').innerText=turn+' WINS! 🎉';
+  return;
+ }
+ if(cells.every(Boolean)){
+  document.getElementById('result').innerText='DRAW!';
+  return;
+ }
+ turn=turn==='X'?'O':'X';
+ document.getElementById('result').innerText='Turn: '+turn;
 }
-function winner(){
-let lines=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
-return lines.some(line=>cells[line[0]]&&cells[line[0]]===cells[line[1]]&&cells[line[1]]===cells[line[2]]);
+
+function getWinner(){
+ let lines=[[0,1,2],[3,4,5],[6,7,8],
+ [0,3,6],[1,4,7],[2,5,8],
+ [0,4,8],[2,4,6]];
+ return lines.some(line=>
+  cells[line[0]]&&
+  cells[line[0]]===cells[line[1]]&&
+  cells[line[1]]===cells[line[2]]
+ );
+}
+
+function closeGame(){
+ document.getElementById('gameArea').style.display='none';
 }
 </script>
+
 </body>
 </html>
