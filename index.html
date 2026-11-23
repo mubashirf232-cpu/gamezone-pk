@@ -1,0 +1,103 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GameZone PK - Free Online Games</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#10111b;color:white;font-family:Arial,sans-serif}
+header{background:#191b2b;padding:22px 15px;text-align:center;border-bottom:2px solid #e5b82e}
+header h1{margin:0;color:#f4c542;font-size:30px}
+header p{color:#bbb;margin-bottom:0}
+main{max-width:850px;margin:auto;padding:20px}
+h2{color:#f4c542}
+.games{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px}
+.card{background:#202337;padding:18px;border-radius:14px;text-align:center}
+.card h3{margin-top:5px}
+button{background:#e5b82e;color:#151515;border:0;padding:11px 17px;border-radius:8px;font-weight:bold;cursor:pointer}
+input{padding:11px;width:100%;border-radius:8px;border:0;margin:8px 0}
+.game{background:#202337;padding:18px;border-radius:14px;margin-top:20px;text-align:center}
+#board{display:grid;grid-template-columns:repeat(3,75px);gap:6px;justify-content:center;margin:15px}
+.cell{height:75px;background:#343951;color:white;font-size:28px;border-radius:8px}
+footer{text-align:center;padding:25px;color:#aaa}
+</style>
+</head>
+<body>
+<header>
+<h1>🎮 GameZone PK</h1>
+<p>Play Free Games • Have Fun • Every Day</p>
+</header>
+<main>
+<h2>🔥 Popular Games</h2>
+<div class="games">
+<div class="card">
+<h3>🎯 Number Guess</h3>
+<p>Guess the secret number from 1 to 10.</p>
+<button onclick="showGame('guess')">Play Now</button>
+</div>
+<div class="card">
+<h3>✊ Rock Paper Scissors</h3>
+<p>Challenge the computer!</p>
+<button onclick="showGame('rps')">Play Now</button>
+</div>
+<div class="card">
+<h3>❌ Tic Tac Toe</h3>
+<p>Play a classic X and O game.</p>
+<button onclick="showGame('tic')">Play Now</button>
+</div>
+</div>
+
+<div class="game" id="game">
+<h2>Welcome to GameZone PK!</h2>
+<p>Select a game above and start playing.</p>
+</div>
+</main>
+<footer>© 2026 GameZone PK | All Rights Reserved</footer>
+
+<script>
+function showGame(type){
+let g=document.getElementById('game');
+if(type==='guess'){
+g.innerHTML=`<h2>🎯 Number Guess</h2><p>Guess a number between 1 and 10</p><input id="guess" type="number" min="1" max="10" placeholder="Your guess"><button onclick="checkGuess()">Check</button><p id="result"></p>`;
+window.secret=Math.floor(Math.random()*10)+1;
+}
+if(type==='rps'){
+g.innerHTML=`<h2>✊ Rock Paper Scissors</h2><button onclick="play('Rock')">Rock</button> <button onclick="play('Paper')">Paper</button> <button onclick="play('Scissors')">Scissors</button><p id="result"></p>`;
+}
+if(type==='tic'){
+window.cells=Array(9).fill('');
+window.turn='X';
+g.innerHTML=`<h2>❌ Tic Tac Toe</h2><div id="board">${Array.from({length:9},(_,i)=>`<button class="cell" onclick="move(${i})"></button>`).join('')}</div><p id="result">Turn: X</p><button onclick="showGame('tic')">Restart</button>`;
+}
+}
+function checkGuess(){
+let n=Number(document.getElementById('guess').value);
+let r=document.getElementById('result');
+if(!n||n<1||n>10){r.innerText='Enter a number from 1 to 10';return}
+r.innerText=n===secret?'🎉 Correct! You won!':n<secret?'Too low! Try again.':'Too high! Try again.';
+}
+function play(choice){
+let options=['Rock','Paper','Scissors'];
+let computer=options[Math.floor(Math.random()*3)];
+let result=choice===computer?'Draw!':(choice==='Rock'&&computer==='Scissors'||choice==='Paper'&&computer==='Rock'||choice==='Scissors'&&computer==='Paper')?'You win! 🎉':'Computer wins!';
+document.getElementById('result').innerText='You: '+choice+' | Computer: '+computer+' — '+result;
+}
+function move(i){
+if(cells[i]||winner())return;
+cells[i]=turn;
+let buttons=document.querySelectorAll('.cell');
+buttons[i].innerText=turn;
+if(winner()){document.getElementById('result').innerText=turn+' wins! 🎉';return}
+if(cells.every(Boolean)){document.getElementById('result').innerText='Draw!';return}
+turn=turn==='X'?'O':'X';
+document.getElementById('result').innerText='Turn: '+turn;
+}
+function winner(){
+let lines=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+return lines.some(line=>cells[line[0]]&&cells[line[0]]===cells[line[1]]&&cells[line[1]]===cells[line[2]]);
+}
+</script>
+</body>
+</html>
