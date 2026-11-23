@@ -1,0 +1,249 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>CHITRAL DRIVE 3D</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;overflow:hidden;background:#91b9d2;font-family:Arial;color:white}
+canvas{display:block}
+#hud{position:fixed;top:12px;left:12px;right:12px;display:flex;justify-content:space-between;pointer-events:none}
+.box{background:#101820dd;border:1px solid #d5ad54;border-radius:12px;padding:10px}
+.gold{color:#f4c65c;font-weight:bold}
+#controls{position:fixed;bottom:20px;left:0;right:0;padding:0 15px;display:flex;justify-content:space-between;align-items:end}
+.group{display:flex;gap:10px}
+button{color:white;background:#111d;border:2px solid #d5ad54;touch-action:none;font-weight:bold}
+.steer{width:65px;height:65px;border-radius:50%;font-size:24px}
+.pedal{width:67px;height:75px;border-radius:15px}
+#start{position:fixed;inset:0;background:#07111acc;display:grid;place-items:center;text-align:center;padding:20px}
+.card{max-width:340px;background:#101820;border:1px solid #d5ad54;border-radius:18px;padding:25px}
+#start button{background:#d5ad54;color:#111;padding:14px 25px;border-radius:9px}
+#status{font-size:13px;color:#ffe19a;margin:10px}
+</style>
+</head>
+<body>
+<div id="hud">
+ <div class="box"><span class="gold">CHITRAL DRIVE 3D</span><br><small>Chitral Bazaar → Booni</small></div>
+ <div class="box">SPEED <span class="gold" id="speed">0</span> km/h<br>DISTANCE <span id="dist">0.0</span> km</div>
+</div>
+<div id="controls">
+ <div class="group">
+  <button class="steer" id="left">◀</button>
+  <button class="steer" id="right">▶</button>
+ </div>
+ <div class="group">
+  <button class="pedal" id="brake">BRAKE</button>
+  <button class="pedal" id="gas">GAS ▲</button>
+ </div>
+</div>
+<div id="start">
+ <div class="card">
+  <h1 class="gold">CHITRAL DRIVE 3D</h1>
+  <p>Drive from Chitral Bazaar towards Booni.</p>
+  <div id="status">Loading 3D car model...</div>
+  <button id="play" disabled>START DRIVING</button>
+ </div>
+</div>
+
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+import {GLTFLoader} from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/GLTFLoader.js';
+
+const scene=new THREE.Scene();
+scene.background=new THREE.Color(0x9bc4df);
+scene.fog=new THREE.Fog(0x9bc4df,180,950);
+
+const camera=new THREE.PerspectiveCamera(65,innerWidth/innerHeight,0.1,2000);
+const renderer=new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(innerWidth,innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
+renderer.shadowMap.enabled=true;
+renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+renderer.outputColorSpace=THREE.SRGBColorSpace;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure=1.1;
+document.body.prepend(renderer.domElement);
+
+scene.add(new THREE.HemisphereLight(0xe6f4ff,0x56634b,2));
+const sun=new THREE.DirectionalLight(0xffedcf,2.5);
+sun.position.set(-100,160,100);
+sun.castShadow=true;
+scene.add(sun);
+
+const material=(c)=>new THREE.MeshStandardMaterial({color:c,roughness:0.9});
+const grass=material(0x526c45);
+const asphalt=material(0x303238);
+const white=material(0xe9e2c9);
+const rock=material(0x777b7c);
+const snow=material(0xe8edf0);
+const dark=material(0x334c38);
+
+function roadX(z){
+ return Math.sin(z*.0018)*24+Math.sin(z*.0007)*36;
+}
+function box(x,y,z,w,h,d,mat){
+ const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);
+ m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;
+ scene.add(m);return m;
+}
+
+// Ground
+const ground=new THREE.Mesh(new THREE.PlaneGeometry(4000,5000),grass);
+ground.rotation.x=-Math.PI/2;
+ground.position.set(0,-.7,-1700);
+ground.receiveShadow=true;
+scene.add(ground);
+
+// Curved road
+const points=[];
+for(let z=350;z>=-3500;z-=5)points.push(new THREE.Vector3(roadX(z),0,z));
+const roadCurve=new THREE.CatmullRomCurve3(points);
+const roadGeo=new THREE.BufferGeometry().setFromPoints(roadCurve.getPoints(900));
+const roadMesh=new THREE.Mesh(roadGeo,new THREE.TubeGeometry(roadCurve,900,7,8,false),asphalt);
+roadMesh.receiveShadow=true;
+scene.add(roadMesh);
+
+// Dashed road markings
+for(let z=330;z>-3500;z-=22){
+ box(roadX(z),.04,z,.18,.04,7,white);
+}
+
+// Mountains
+for(let i=0;i<100;i++){
+ const z=250-i*38;
+ for(const side of [-1,1]){
+  const h=75+(i*19%100);
+  const m=new THREE.Mesh(new THREE.ConeGeometry(32+(i%4)*10,h,6),i%5===0?snow:rock);
+  m.position.set(roadX(z)+side*(100+i%4*18),h/2,z);
+  m.rotation.y=i*.7;m.castShadow=true;scene.add(m);
+ }
+}
+
+// Bazaar buildings
+const colors=[0xc8ad8c,0xd6c5a5,0xb3a08a,0xe0d2b8];
+for(let i=0;i<22;i++){
+ const z=100-i*13;
+ for(const side of [-1,1]){
+  const x=roadX(z)+side*19;
+  box(x,3,z,8,6,7,material(colors[i%4]));
+  box(x,6.3,z,8.5,.6,7.5,material(0x715c48));
+  box(x,2,z+3.6,1.5,3,.1,material(0x45382d));
+  box(x-2,3.7,z+3.6,1.1,1.1,.12,material(0x8cb9d0));
+  box(x+2,3.7,z+3.6,1.1,1.1,.12,material(0x8cb9d0));
+ }
+}
+
+// Trees
+for(let i=0;i<100;i++){
+ const z=-100-i*31;
+ for(const side of [-1,1]){
+  const x=roadX(z)+side*(24+i%5*9);
+  box(x,2,z,.7,4,.7,material(0x5a432d));
+  const leaves=new THREE.Mesh(new THREE.ConeGeometry(3.3,9,7),dark);
+  leaves.position.set(x,7,z);leaves.castShadow=true;scene.add(leaves);
+ }
+}
+
+// Roadside rocks
+for(let i=0;i<100;i++){
+ const z=-150-i*33;
+ for(const side of [-1,1]){
+  const r=new THREE.Mesh(new THREE.DodecahedronGeometry(2+i%4),rock);
+  r.position.set(roadX(z)+side*(14+i%4*3),1,z);
+  r.castShadow=true;scene.add(r);
+ }
+}
+
+// Load uploaded car
+let car=null;
+const loader=new GLTFLoader();
+const status=document.getElementById('status');
+loader.load('./boxy-off-roader.glb',gltf=>{
+ car=gltf.scene;
+ const bounds=new THREE.Box3().setFromObject(car);
+ const size=bounds.getSize(new THREE.Vector3());
+ const center=bounds.getCenter(new THREE.Vector3());
+ car.position.sub(center);
+ const scale=4.5/Math.max(size.x,size.z);
+ car.scale.setScalar(scale);
+ car.rotation.y=Math.PI;
+ car.position.set(roadX(0),0,0);
+ car.traverse(o=>{
+  if(o.isMesh){o.castShadow=true;o.receiveShadow=true;}
+ });
+ scene.add(car);
+ status.textContent='3D car ready!';
+ document.getElementById('play').disabled=false;
+},undefined,error=>{
+ status.textContent='Car model load nahi hua. File name aur location check karein.';
+ console.error(error);
+});
+
+// Controls
+const keys={left:false,right:false,gas:false,brake:false};
+function hold(id,key){
+ const el=document.getElementById(id);
+ el.addEventListener('pointerdown',e=>{
+  e.preventDefault();keys[key]=true;el.setPointerCapture(e.pointerId);
+ });
+ ['pointerup','pointercancel','lostpointercapture'].forEach(ev=>
+  el.addEventListener(ev,()=>keys[key]=false));
+}
+hold('left','left');hold('right','right');
+hold('gas','gas');hold('brake','brake');
+
+addEventListener('keydown',e=>{
+ if(e.key==='ArrowLeft'||e.key==='a')keys.left=true;
+ if(e.key==='ArrowRight'||e.key==='d')keys.right=true;
+ if(e.key==='ArrowUp'||e.key==='w')keys.gas=true;
+ if(e.key==='ArrowDown'||e.key==='s')keys.brake=true;
+});
+addEventListener('keyup',e=>{
+ if(e.key==='ArrowLeft'||e.key==='a')keys.left=false;
+ if(e.key==='ArrowRight'||e.key==='d')keys.right=false;
+ if(e.key==='ArrowUp'||e.key==='w')keys.gas=false;
+ if(e.key==='ArrowDown'||e.key==='s')keys.brake=false;
+});
+
+let speed=0,distance=0,steer=0,running=false;
+document.getElementById('play').onclick=()=>{
+ if(!car)return;
+ running=true;document.getElementById('start').style.display='none';
+};
+
+const clock=new THREE.Clock();
+function animate(){
+ requestAnimationFrame(animate);
+ const dt=Math.min(clock.getDelta(),.04);
+ if(car&&running){
+  if(keys.gas)speed=Math.min(speed+35*dt,145);
+  else speed=Math.max(0,speed-8*dt);
+  if(keys.brake)speed=Math.max(0,speed-65*dt);
+  if(keys.left)steer=Math.max(-1,steer-2*dt);
+  if(keys.right)steer=Math.min(1,steer+2*dt);
+  if(!keys.left&&!keys.right)steer*=.93;
+  car.position.z-=speed*dt*.23;
+  car.position.x=roadX(car.position.z)+steer*5;
+  car.rotation.y=Math.PI-steer*.2;
+  distance+=speed*dt/3600;
+ }
+ if(car){
+  camera.position.lerp(new THREE.Vector3(car.position.x,6.5,car.position.z+13),.08);
+  camera.lookAt(car.position.x,1.2,car.position.z-7);
+ }
+ document.getElementById('speed').textContent=Math.round(speed);
+ document.getElementById('dist').textContent=distance.toFixed(1);
+ renderer.render(scene,camera);
+}
+animate();
+
+addEventListener('resize',()=>{
+ camera.aspect=innerWidth/innerHeight;
+ camera.updateProjectionMatrix();
+ renderer.setSize(innerWidth,innerHeight);
+});
+</script>
+</body>
+</html>
