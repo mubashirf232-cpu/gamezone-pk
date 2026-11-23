@@ -392,8 +392,7 @@ function closeGame(){
  document.getElementById('gameArea').style.display='none';
 }
 </script>
-
-</body>
+  
  <section id="game-library" style="padding:30px 15px;background:#080808;color:white;text-align:center">
   <h2 style="color:gold;font-size:30px">🎮 GAME LIBRARY</h2>
   <p>Play your favourite games here</p>
@@ -401,8 +400,9 @@ function closeGame(){
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px;max-width:1000px;margin:auto">
 
     <div style="background:#171717;padding:15px;border:1px solid #b8860b;border-radius:12px">
-      <h3>🏎️ Car Racing</h3>
-      <button onclick="openGame('https://playcanv.as/p/2OlkUaxF/')" style="background:gold;padding:12px;border:0;border-radius:8px">Play Game</button>
+  <h3>🧱 Block Craft</h3>
+  <p>Build your own 3D block world!</p>
+  <button onclick="openGame('minecraft')" style="background:gold;padding:12px;border:0;border-radius:8px">PLAY GAME</button>
     </div>
 
     <div style="background:#171717;padding:15px;border:1px solid #b8860b;border-radius:12px">
@@ -413,18 +413,81 @@ function closeGame(){
   </div>
 
   <div id="game-player" style="display:none;margin:25px auto;max-width:1000px">
-    <button onclick="closeGame()" style="background:#b8860b;padding:12px;border:0;border-radius:8px;margin-bottom:10px">← Back to Games</button>
+    <button onclick="closeLibraryGame()" style="background:#b8860b;padding:12px;border:0;border-radius:8px;margin-bottom:10px">← Back to Games</button>
     <iframe id="game-frame" style="width:100%;height:600px;border:1px solid gold;border-radius:10px" allowfullscreen></iframe>
   </div>
 </section>
 
 <script>
+
 function openGame(url) {
-  document.getElementById('game-frame').src = url;
+  const frame = document.getElementById('game-frame');
   document.getElementById('game-player').style.display = 'block';
+
+  if (url === 'minecraft') {
+    frame.srcdoc = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+          body { margin:0; background:#18251b; color:white; font-family:Arial; text-align:center; }
+          h2 { color:#f2ce70; }
+          .tools { padding:10px; }
+          button { padding:12px; margin:4px; border:0; border-radius:7px; font-weight:bold; }
+          #world {
+            display:grid;
+            grid-template-columns:repeat(10,1fr);
+            max-width:500px;
+            margin:15px auto;
+            border:3px solid #9a762e;
+            touch-action:manipulation;
+          }
+          .block {
+            aspect-ratio:1;
+            border:1px solid #0003;
+            background:#86b94b;
+            font-size:clamp(12px,4vw,22px);
+            display:grid;
+            place-items:center;
+          }
+        </style>
+      </head>
+      <body>
+        <h2>🧱 BLOCK CRAFT</h2>
+        <p>Select a block, then tap an empty space to build!</p>
+        <div class="tools">
+          <button onclick="selected='🌱'">🌱 Grass</button>
+          <button onclick="selected='🪨'">🪨 Stone</button>
+          <button onclick="selected='🪵'">🪵 Wood</button>
+          <button onclick="selected='🧹'">🧹 Remove</button>
+        </div>
+        <div id="world"></div>
+        <p>Build your own little world!</p>
+        <script>
+          let selected = '🪨';
+          const world = document.getElementById('world');
+          for(let i=0;i<100;i++){
+            const block=document.createElement('div');
+            block.className='block';
+            block.textContent=i>=70?'🌱':'';
+            block.onclick=()=>{
+              block.textContent=selected==='🧹'?'':selected;
+            };
+            world.appendChild(block);
+          }
+        <\/script>
+      </body>
+      </html>
+    `;
+  } else {
+    frame.src = url;
+  }
+
   document.getElementById('game-player').scrollIntoView({behavior:'smooth'});
 }
-function closeGame() {
+  
+function closeLibraryGame() {
   document.getElementById('game-frame').src = '';
   document.getElementById('game-player').style.display = 'none';
 }
